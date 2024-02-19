@@ -94,7 +94,7 @@
  [],
  False,
  False,
- 1707234882,
+ 1707766474,
  [('run.exe',
    'C:\\Users\\DamilolaAyodele\\Videos\\ork\\venv\\Lib\\site-packages\\PyInstaller\\bootloader\\Windows-64bit-intel\\run.exe',
    'EXECUTABLE')],

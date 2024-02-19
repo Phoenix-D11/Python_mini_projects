@@ -5,10 +5,9 @@ Created on Tue Feb  6 16:18:53 2024
 @author: DamilolaAyodele
 """
 
-# Importing libraries
-from pathlib import Path
 import os
 import shutil
+from pathlib import Path
 
 # Formats for different file types/categories
 audio = (".3ga", ".aac", ".ac3", ".aif", ".aiff",
@@ -39,12 +38,17 @@ program = (".exe", ".deskthemepack", '.diagcab')
 
 folder = ('')
 
+# Create the function to format the directory_path
+def convert_to_cross_platform_path(path):
+    """Convert Windows-style path to cross-platform path."""
+    return str(Path(path).as_posix())
+
 # Function to create destination folders if they don't exist
 def create_destination_folders(destination_path):
     folders = ['Pictures', 'Audio', 'Videos', 'Documents', 'Compressed', 'Programs', 'Scripts', 'Others']
     for folder_name in folders:
-        folder_path = destination_path / folder_name
-        folder_path.mkdir(exist_ok=True)
+        folder_path = os.path.join(destination_path, folder_name)
+        os.makedirs(folder_path, exist_ok=True)
 
 # Functions for sorting different files
 def is_audio(file):
@@ -74,27 +78,33 @@ def is_app(file):
 # Get input from the user for the destination path
 destination_path = Path(input("Enter the destination path: "))
 
+# Convert Windows-style path to cross-platform path
+destination_path = convert_to_cross_platform_path(destination_path)
+
 # Ensure the destination folders exist
 create_destination_folders(destination_path)
 
 # Loop for sorting the files into different folders
 for file in os.listdir(destination_path):
     if os.path.isfile(os.path.join(destination_path, file)):
-        if is_img(file):
-            shutil.move(os.path.join(destination_path, file), destination_path / 'Pictures' / file)
-        elif is_audio(file):
-            shutil.move(os.path.join(destination_path, file), destination_path / 'Audios' / file)
-        elif is_video(file):
-            shutil.move(os.path.join(destination_path, file), destination_path / 'Videos' / file)
-        elif is_document(file):
-            shutil.move(os.path.join(destination_path, file), destination_path / 'Documents' / file)
-        elif is_compressed(file):
-            shutil.move(os.path.join(destination_path, file), destination_path / 'Compressed' / file)
-        elif is_app(file):
-            shutil.move(os.path.join(destination_path, file), destination_path / 'Programs' / file)
-        elif is_script(file):
-            shutil.move(os.path.join(destination_path, file), destination_path / 'Scripts' / file)
-        elif is_folder(file):
-            print('This is a folder')
-        else:
-            shutil.move(os.path.join(destination_path, file), destination_path / 'Others' / file)
+        try:
+            if is_img(file):
+                shutil.move(os.path.join(destination_path, file), os.path.join(destination_path, 'Pictures', file))
+            elif is_audio(file):
+                shutil.move(os.path.join(destination_path, file), os.path.join(destination_path, 'Audio', file))
+            elif is_video(file):
+                shutil.move(os.path.join(destination_path, file), os.path.join(destination_path, 'Videos', file))
+            elif is_document(file):
+                shutil.move(os.path.join(destination_path, file), os.path.join(destination_path, 'Documents', file))
+            elif is_compressed(file):
+                shutil.move(os.path.join(destination_path, file), os.path.join(destination_path, 'Compressed', file))
+            elif is_app(file):
+                shutil.move(os.path.join(destination_path, file), os.path.join(destination_path, 'Programs', file))
+            elif is_script(file):
+                shutil.move(os.path.join(destination_path, file), os.path.join(destination_path, 'Scripts', file))
+            elif is_folder(file):
+                print('This is a folder')
+            else:
+                shutil.move(os.path.join(destination_path, file), os.path.join(destination_path, 'Others', file))
+        except FileNotFoundError:
+            print(f"FileNotFoundError: [Errno 2] No such file or directory: {file}")
